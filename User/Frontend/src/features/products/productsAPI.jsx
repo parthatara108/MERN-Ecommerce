@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export function fetchProductsByFilter(filter, pagination, sort) {
+export function fetchProductsByFilter(filter, pagination, sort, search) {
   let queryString = ''
   for (let key in filter) {
     const categoryValues = filter[key];
@@ -13,6 +13,10 @@ export function fetchProductsByFilter(filter, pagination, sort) {
   }
   for (let key in pagination) {
     queryString += `${key}=${pagination[key]}&`;
+  }
+
+  if (search) {
+    queryString += `search=${search}&`;
   }
 
   return axios.get('/products/?' + queryString)

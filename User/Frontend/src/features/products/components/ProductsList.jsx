@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchAllBrandsAsync, fetchAllCategoryAsync, fetchAllProductsFilterAsync } from '../productsSlice'
 import { ITEMS_PER_PAGE } from '../../../app/constants'
 import Pagination from '../../../components/Pagination'
-import { Spinner } from "@material-tailwind/react";
+import { Button, Input, Spinner } from "@material-tailwind/react";
 import Product from '../../../components/Product'
 import MobileFilter from '../../../components/MobileFilter'
 import DesktopFilter from '../../../components/DesktopFilter'
 import SortItems from '../../../components/SortItems'
+import { useForm } from 'react-hook-form'
+import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 export function ProductsList() {
   const dispatch = useDispatch()
@@ -15,6 +17,7 @@ export function ProductsList() {
   const status = useSelector(state => state.product.status)
   const brands = useSelector(state => state.product.brands)
   const category = useSelector(state => state.product.category)
+  const { register, handleSubmit } = useForm();
 
   const filters = [
     {
@@ -31,6 +34,8 @@ export function ProductsList() {
   const [filter, setFilter] = useState({})
   const [sort, setSort] = useState({})
   const [page, setPage] = useState(1)
+  const [search, setSearch] = useState()
+  const [openSearch, setOpenSearch] = useState(false)
   const totalItems = useSelector(state => state.product.totalItems)
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
 
@@ -60,10 +65,14 @@ export function ProductsList() {
     setPage(page);
   }
 
+  const handleSearch = (data) => {
+    setSearch(data.search)
+  }
+
   useEffect(() => {
     const pagination = { _page: page, _limit: ITEMS_PER_PAGE }
-    dispatch(fetchAllProductsFilterAsync({ filter, sort, pagination }))
-  }, [dispatch, filter, sort, page])
+    dispatch(fetchAllProductsFilterAsync({ filter, sort, pagination, search }))
+  }, [dispatch, filter, sort, page, search])
 
   useEffect(() => {
     setPage(1)
@@ -85,6 +94,30 @@ export function ProductsList() {
           <main className=" px-4 sm:px-6 lg:px-8">
             <div className="flex items-baseline justify-between border-b bg-white border-gray-200 pb-6 pt-14">
               <h1 className="text-1xl font-bold tracking-tight text-gray-900 sm:text-4xl">All Products</h1>
+              {openSearch ?
+                <XMarkIcon onClick={() => setOpenSearch(!openSearch)} className='w-6 h-6 cursor-pointer' />
+                :
+                <MagnifyingGlassIcon className='md:hidden w-6 h-6 cursor-pointer' onClick={() => setOpenSearch(!openSearch)} />
+              }
+
+              <form noValidate onSubmit={handleSubmit((data) => {
+                handleSearch(data)
+              })} className={`${openSearch ? 'block' : 'hidden'} absolute mt-16 flex md:gap-2 md:relative md:mt-0 md:flex`}>
+                <Input
+                  type="text"
+                  label="Search"
+                  className="pr-20"
+                  id="search"
+                  {...register("search")}
+                />
+                <Button
+                  size="sm"
+                  type='submit'
+                  className=" float-right rounded lg:w-24 md:top-0"
+                >
+                  Search
+                </Button>
+              </form>
 
               {/* sort items */}
               <SortItems setMobileFiltersOpen={setMobileFiltersOpen} handleSort={handleSort} />
@@ -110,7 +143,7 @@ export function ProductsList() {
                             <Spinner className="h-12 w-12" />
                           </div>
                           :
-                          <Product products={products} />
+                          totalItems > 0 ? <Product products={products} /> : <div className='flex justify-center'>No Products Found</div>
                         }
                       </div>
                     </div>

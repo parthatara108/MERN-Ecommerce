@@ -60,7 +60,7 @@ export default function CheckOutForm() {
         const { error } = await stripe.confirmPayment({
             elements,
             confirmParams: {
-                return_url: `/order-success/${currentOrder.id}`,
+                return_url: `parth-mern-ecommerce1.vercel.app/order-success/${currentOrder.id}`,
             },
         });
 
@@ -89,7 +89,7 @@ export default function CheckOutForm() {
                 <form id="payment-form" className="" onSubmit={handleSubmit}>
                     <LinkAuthenticationElement
                         id="link-authentication-element"
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => setEmail(e.target?.value)}
                     />
                     <PaymentElement id="payment-element" options={paymentElementOptions} />
                     <button disabled={isLoading || !stripe || !elements} id="submit">
