@@ -95,7 +95,7 @@ export function ProductsList() {
             <div className="flex items-baseline justify-between border-b bg-white border-gray-200 pb-6 pt-14">
               <h1 className="text-1xl font-bold tracking-tight text-gray-900 sm:text-4xl">All Products</h1>
               {openSearch ?
-                <XMarkIcon onClick={() => setOpenSearch(!openSearch)} className='w-6 h-6 cursor-pointer' />
+                <XMarkIcon onClick={() => setOpenSearch(!openSearch)} className='w-6 h-6 cursor-pointer md:hidden' />
                 :
                 <MagnifyingGlassIcon className='md:hidden w-6 h-6 cursor-pointer' onClick={() => setOpenSearch(!openSearch)} />
               }
