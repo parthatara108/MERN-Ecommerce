@@ -20,12 +20,7 @@ export const confirmOrderAsync = createAsyncThunk(
     return response.data;
   }
 );
-// export const resetOrderAsync = createAsyncThunk(
-//   'order/resetOrder',
-//   () => {
 
-//   }
-// );
 export const fetchAllOrdersAsync = createAsyncThunk(
   'order/fetchOrders',
   async (pagination) => {
